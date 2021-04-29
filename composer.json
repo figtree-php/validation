@@ -1,0 +1,30 @@
+{
+	"name": "figtree-php/validation",
+	"description": "FigTree Validation",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Alan Ondra",
+			"email": "r.alan.ondra@gmail.com",
+			"role": "Creator"
+		}
+	],
+	"support": {
+		"email": "figtree.php@gmail.com",
+		"source": "https://github.com/figtree-php/validation",
+		"issues": "https://github.com/figtree-php/validation/issues",
+		"wiki": "https://github.com/figtree-php/validation/wiki"
+	},
+	"autoload": {
+		"psr-4": {
+			"FigTree\\Validation\\": "src/",
+			"FigTree\\Validation\\Tests\\": "tests/"
+		}
+	},
+	"require": {},
+	"require-dev": {
+		"squizlabs/php_codesniffer": "^3.6",
+		"phpunit/phpunit": "^9.5"
+	}
+}
