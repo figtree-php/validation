@@ -22,7 +22,15 @@
 			"FigTree\\Validation\\Tests\\": "tests/"
 		}
 	},
-	"require": {},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/figtree-php/exceptions"
+		}
+	],
+	"require": {
+		"figtree-php/exceptions": "^0.1.0"
+	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "^3.6",
 		"phpunit/phpunit": "^9.5"
