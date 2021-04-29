@@ -22,12 +22,6 @@
 			"FigTree\\Validation\\Tests\\": "tests/"
 		}
 	},
-	"repositories": {
-		"figtree-php/exceptions": {
-			"type": "vcs",
-			"url": "https://github.com/figtree-php/exceptions"
-		}
-	},
 	"require": {
 		"figtree-php/exceptions": "^0.1.0"
 	},
