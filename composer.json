@@ -23,7 +23,8 @@
 		}
 	},
 	"require": {
-		"figtree-php/exceptions": "^0.1.0"
+		"php": "^8.0",
+		"figtree-php/exceptions": "^0 || ^1.0"
 	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "^3.6",
