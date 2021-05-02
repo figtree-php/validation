@@ -7,7 +7,6 @@ use FigTree\Validation\Contracts\{
 	RuleFactoryInterface,
 	RuleInterface
 };
-use FigTree\Validation\Exceptions\InvalidRuleException;
 
 abstract class AbstractFilter implements FilterInterface
 {
@@ -45,10 +44,6 @@ abstract class AbstractFilter implements FilterInterface
 
 		$filter = $definition['filter'];
 
-		if (empty($filter)) {
-			throw new InvalidRuleException($this->getRule($field));
-		}
-
 		return filter_var($value, $filter, $definition);
 	}
 
@@ -69,10 +64,6 @@ abstract class AbstractFilter implements FilterInterface
 		}
 
 		$filter = $definition['filter'];
-
-		if (empty($filter)) {
-			throw new InvalidRuleException($this->getRule($field));
-		}
 
 		return filter_input($type, $field, $filter, $definition);
 	}
