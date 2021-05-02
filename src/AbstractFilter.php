@@ -78,7 +78,17 @@ abstract class AbstractFilter implements FilterInterface
 	 */
 	public function filterArray(array $data, bool $addEmpty = true): array
 	{
-		return filter_var_array($data, $this->getDefinitions(), $addEmpty);
+		$definitions = $this->getDefinitions();
+
+		$input = filter_var_array($data, $definitions, $addEmpty);
+
+		if (!is_array($input)) {
+			$input = ($addEmpty)
+				? array_fill_keys(array_keys($definitions), null)
+				: [];
+		}
+
+		return $input;
 	}
 
 	/**
@@ -91,7 +101,17 @@ abstract class AbstractFilter implements FilterInterface
 	 */
 	public function filterInputArray(int $type, bool $addEmpty = true): array
 	{
-		return filter_input_array($type, $this->getDefinitions(), $addEmpty);
+		$definitions = $this->getDefinitions();
+
+		$input = filter_input_array($type, $definitions, $addEmpty);
+
+		if (!is_array($input)) {
+			$input = ($addEmpty)
+				? array_fill_keys(array_keys($definitions), null)
+				: [];
+		}
+
+		return $input;
 	}
 
 	/**
@@ -121,6 +141,9 @@ abstract class AbstractFilter implements FilterInterface
 	 */
 	protected function getDefinitions(): array
 	{
-		return array_map(fn (RuleInterface $rule) => $rule->toArray(), $this->getRules());
+		return array_map(
+			fn (RuleInterface $rule) => $rule->toArray(),
+			$this->getRules()
+		);
 	}
 }

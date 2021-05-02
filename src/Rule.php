@@ -41,7 +41,7 @@ class Rule implements RuleInterface
 	 */
 	public function hasFlag(int $flag): bool
 	{
-		return $this->flags & $flag;
+		return ($flag > 0 && ($this->flags & $flag) == $flag);
 	}
 
 	/**
