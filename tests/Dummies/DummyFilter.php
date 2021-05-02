@@ -6,36 +6,39 @@ use FigTree\Validation\AbstractFilter;
 
 class DummyFilter extends AbstractFilter
 {
+	/**
+	 * @return \FigTree\Validation\RuleFactory
+	 */
+	protected function rules()
+	{
+		return $this->ruleFactory;
+	}
+
 	public function getRules(): array
 	{
-		/**
-		 * @var \FigTree\Validation\RuleFactory
-		 */
-		$rules = $this->ruleFactory;
-
 		return [
-			'test_valid_bool' => $rules->validBool(),
-			'test_valid_domain' => $rules->validDomain(),
-			'test_valid_email' => $rules->validEmail(),
-			'test_valid_float' => $rules->validFloat(-100, 100, 2),
-			'test_valid_int' => $rules->validInt(-100, 100),
-			'test_valid_ip_address' => $rules->validIpAddress(),
-			'test_valid_mac_address' => $rules->validMacAddress(),
-			'test_valid_regexp' => $rules->validRegExp('/^valid value$/i'),
+			'test_valid_bool' => $this->rules()->validBool(),
+			'test_valid_domain' => $this->rules()->validDomain(),
+			'test_valid_email' => $this->rules()->validEmail(),
+			'test_valid_float' => $this->rules()->validFloat(-100, 100, 2),
+			'test_valid_int' => $this->rules()->validInt(-100, 100),
+			'test_valid_ip_address' => $this->rules()->validIpAddress(),
+			'test_valid_mac_address' => $this->rules()->validMacAddress(),
+			'test_valid_regexp' => $this->rules()->validRegExp('/^valid value$/i'),
 
-			'test_add_slashes' => $rules->addSlashes(),
-			'test_clean_email' => $rules->cleanEmail(),
-			'test_clean_encoded' => $rules->cleanEncodedString(),
-			'test_clean_float' => $rules->cleanFloat(),
-			'test_clean_full_special_chars' => $rules->cleanFullSpecialChars(),
-			'test_clean_int' => $rules->cleanInt(),
-			'test_clean_special_chars' => $rules->cleanSpecialChars(),
-			'test_clean_string' => $rules->cleanString(),
-			'test_clean_unsafe' => $rules->cleanUnsafe(),
-			'test_clean_url' => $rules->cleanUrl(),
+			'test_add_slashes' => $this->rules()->addSlashes(),
+			'test_clean_email' => $this->rules()->cleanEmail(),
+			'test_clean_encoded' => $this->rules()->cleanEncodedString(),
+			'test_clean_float' => $this->rules()->cleanFloat(),
+			'test_clean_full_special_chars' => $this->rules()->cleanFullSpecialChars(),
+			'test_clean_int' => $this->rules()->cleanInt(),
+			'test_clean_special_chars' => $this->rules()->cleanSpecialChars(),
+			'test_clean_string' => $this->rules()->cleanString(),
+			'test_clean_unsafe' => $this->rules()->cleanUnsafe(),
+			'test_clean_url' => $this->rules()->cleanUrl(),
 
-			'test_callable' => $rules->withCallable('trim'),
-			'test_closure' => $rules->withClosure($this->mult(2)),
+			'test_callable' => $this->rules()->withCallable('trim'),
+			'test_closure' => $this->rules()->withClosure($this->mult(2)),
 		];
 	}
 
