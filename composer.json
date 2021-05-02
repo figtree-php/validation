@@ -1,6 +1,11 @@
 {
 	"name": "figtree-php/validation",
 	"description": "FigTree Validation",
+	"keywords": [
+		"figtree",
+		"figtree-php",
+		"validation"
+	],
 	"type": "library",
 	"license": "MIT",
 	"authors": [
