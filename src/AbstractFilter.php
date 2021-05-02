@@ -7,6 +7,7 @@ use FigTree\Validation\Contracts\{
 	RuleFactoryInterface,
 	RuleInterface
 };
+use FigTree\Validation\Exceptions\InvalidRuleException;
 
 abstract class AbstractFilter implements FilterInterface
 {
@@ -42,7 +43,11 @@ abstract class AbstractFilter implements FilterInterface
 			return $default;
 		}
 
-		$filter = $definition['filter'] ?? null;
+		$filter = $definition['filter'];
+
+		if (empty($filter)) {
+			throw new InvalidRuleException($this->getRule($field));
+		}
 
 		return filter_var($value, $filter, $definition);
 	}
@@ -63,7 +68,11 @@ abstract class AbstractFilter implements FilterInterface
 			return $default;
 		}
 
-		$filter = $definition['filter'] ?? null;
+		$filter = $definition['filter'];
+
+		if (empty($filter)) {
+			throw new InvalidRuleException($this->getRule($field));
+		}
 
 		return filter_input($type, $field, $filter, $definition);
 	}
@@ -115,6 +124,20 @@ abstract class AbstractFilter implements FilterInterface
 	}
 
 	/**
+	 * Get a single Rule.
+	 *
+	 * @param string $field
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface|null
+	 */
+	protected function getRule(string $field): ?RuleInterface
+	{
+		$rules = $this->getRules();
+
+		return $rules[$field] ?? null;
+	}
+
+	/**
 	 * Get a single Rule as a native filter definition.
 	 *
 	 * @param string $field
@@ -123,9 +146,7 @@ abstract class AbstractFilter implements FilterInterface
 	 */
 	protected function getDefinition(string $field): ?array
 	{
-		$rules = $this->getRules();
-
-		$rule = $rules[$field] ?? null;
+		$rule = $this->getRule($field);
 
 		if (!($rule instanceof RuleInterface)) {
 			return null;
