@@ -2,8 +2,6 @@
 
 namespace FigTree\Validation\Tests\Support;
 
-use const FILTER_SANITIZE_FULL_SPECIAL_CHARS;
-
 use Closure;
 use FigTree\Exceptions\UnexpectedTypeException;
 use FigTree\Validation\{
@@ -66,7 +64,7 @@ class FilterTest extends AbstractTestCase
 		$this->expectExceptionMessage(sprintf('Expected value of type array; NULL given.', RuleInterface::class));
 
 		$filterFactory
-			->create(function (RuleFactory $rules) {
+			->create(function () {
 				return null;
 			});
 	}
@@ -109,7 +107,7 @@ class FilterTest extends AbstractTestCase
 		$this->expectExceptionMessage(sprintf('Expected value of type %s; string given.', RuleInterface::class));
 
 		$filterFactory
-			->create(function (RuleFactory $rules) {
+			->create(function () {
 				return [
 					'foo' => 'bar',
 				];

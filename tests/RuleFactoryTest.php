@@ -2,8 +2,6 @@
 
 namespace FigTree\Validation\Tests;
 
-use const FILTER_SANITIZE_FULL_SPECIAL_CHARS;
-
 use Closure;
 use FigTree\Validation\Contracts\RuleFactoryInterface;
 use FigTree\Validation\Contracts\RuleInterface;

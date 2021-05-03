@@ -67,7 +67,7 @@ class FilterFactory implements FilterFactoryInterface
 			throw new UnexpectedTypeException($rules, 'associative array');
 		}
 
-		array_walk($rules, function ($rule, $key) {
+		array_walk($rules, function ($rule) {
 			if (!($rule instanceof RuleInterface)) {
 				throw new UnexpectedTypeException($rule, RuleInterface::class);
 			}
