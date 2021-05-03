@@ -2,33 +2,76 @@
 
 namespace FigTree\Validation;
 
-use Closure;
 use FigTree\Exceptions\UnexpectedTypeException;
-use FigTree\Validation\Contracts\RuleFactoryInterface;
+use FigTree\Validation\Contracts\{
+	FilterFactoryInterface,
+	FilterInterface,
+	RuleFactoryInterface,
+	RuleInterface,
+};
 
-class FilterFactory
+class FilterFactory implements FilterFactoryInterface
 {
+	/**
+	 * Construct an instance of FilterFactory.
+	 */
 	public function __construct(protected RuleFactoryInterface $ruleFactory)
 	{
 		//
 	}
 
-	public function create(Closure $closure)
+	/**
+	 * Get the assigned RuleFactory instance.
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleFactoryInterface
+	 */
+	public function getRuleFactory(): RuleFactoryInterface
 	{
-		$filter = new Filter($this->createRules($closure));
+		return $this->ruleFactory;
+	}
+
+	/**
+	 * Create a Filter using Rules.
+	 *
+	 * @param callable Callback function taking a RuleFactoryInterface and returning an associative array of Rules.
+	 *
+	 * @return \FigTree\Validation\Contracts\FilterInterface
+	 */
+	public function create(callable $callback): FilterInterface
+	{
+		$rules = $this->createRules($callback);
+
+		$filter = new Filter($rules);
 
 		$filter->setRuleFactory($this->ruleFactory);
 
 		return $filter;
 	}
 
-	protected function createRules(Closure $closure): array
+	/**
+	 * Run the creation callback method and validate its results.
+	 *
+	 * @param callable Callback function taking a RuleFactoryInterface and returning an associative array of Rules.
+	 *
+	 * @return array
+	 */
+	protected function createRules(callable $callback): array
 	{
-		$rules = $closure($this->ruleFactory);
+		$rules = $callback($this->ruleFactory);
 
 		if (!is_array($rules)) {
 			throw new UnexpectedTypeException($rules, 'array');
 		}
+
+		if (array_is_list($rules)) {
+			throw new UnexpectedTypeException($rules, 'associative array');
+		}
+
+		array_walk($rules, function ($rule, $key) {
+			if (!($rule instanceof RuleInterface)) {
+				throw new UnexpectedTypeException($rule, RuleInterface::class);
+			}
+		});
 
 		return $rules;
 	}

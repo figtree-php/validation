@@ -2,21 +2,26 @@
 
 namespace FigTree\Validation\Tests\Support;
 
+use const FILTER_SANITIZE_FULL_SPECIAL_CHARS;
+
 use Closure;
+use FigTree\Exceptions\UnexpectedTypeException;
 use FigTree\Validation\{
 	Contracts\FilterInterface,
 	Contracts\RuleInterface,
+	AbstractRuleFactory,
 	Filter,
 	FilterFactory,
 	Rule,
 	RuleFactory,
 };
+use FigTree\Validation\Contracts\RuleFactoryInterface;
 use FigTree\Validation\Tests\{
 	AbstractTestCase,
 	Dummies\DummyFilter,
 };
 
-class ValidationTest extends AbstractTestCase
+class FilterTest extends AbstractTestCase
 {
 	/**
 	 * @small
@@ -29,15 +34,86 @@ class ValidationTest extends AbstractTestCase
 
 		$filterFactory = new FilterFactory($ruleFactory);
 
-		$filter = $filterFactory->create(Closure::fromCallable(function (RuleFactory $rules) {
-			$rules = [
-				'int' => $rules->validInt(0, 10),
-			];
+		$this->assertNotNull($filterFactory->getRuleFactory());
+		$this->assertInstanceOf(RuleFactoryInterface::class, $filterFactory->getRuleFactory());
+		$this->assertInstanceOf(AbstractRuleFactory::class, $filterFactory->getRuleFactory());
+		$this->assertInstanceOf(RuleFactory::class, $filterFactory->getRuleFactory());
 
-			return $rules;
-		}));
+		$filter = $filterFactory
+			->create(function (RuleFactory $rules) {
+				$rules = [
+					'int' => $rules->validInt(0, 10),
+				];
+
+				return $rules;
+			});
 
 		$this->assertInstanceOf(Filter::class, $filter);
+	}
+
+	/**
+	 * @small
+	 *
+	 * @return void
+	 */
+	public function testFilterFactoryInvalidReturnType()
+	{
+		$ruleFactory = new RuleFactory();
+
+		$filterFactory = new FilterFactory($ruleFactory);
+
+		$this->expectException(UnexpectedTypeException::class);
+		$this->expectExceptionMessage(sprintf('Expected value of type array; NULL given.', RuleInterface::class));
+
+		$filterFactory
+			->create(function (RuleFactory $rules) {
+				return null;
+			});
+	}
+
+	/**
+	 * @small
+	 *
+	 * @return void
+	 */
+	public function testFilterFactoryInvalidReturnKeys()
+	{
+		$ruleFactory = new RuleFactory();
+
+		$filterFactory = new FilterFactory($ruleFactory);
+
+		$this->expectException(UnexpectedTypeException::class);
+		$this->expectExceptionMessage(sprintf('Expected value of type associative array; array given.', RuleInterface::class));
+
+		$filterFactory
+			->create(function (RuleFactory $rules) {
+				return [
+					$rules->cleanEmail(),
+				];
+			});
+	}
+
+
+	/**
+	 * @small
+	 *
+	 * @return void
+	 */
+	public function testFilterFactoryInvalidReturnValues()
+	{
+		$ruleFactory = new RuleFactory();
+
+		$filterFactory = new FilterFactory($ruleFactory);
+
+		$this->expectException(UnexpectedTypeException::class);
+		$this->expectExceptionMessage(sprintf('Expected value of type %s; string given.', RuleInterface::class));
+
+		$filterFactory
+			->create(function (RuleFactory $rules) {
+				return [
+					'foo' => 'bar',
+				];
+			});
 	}
 
 	/**
