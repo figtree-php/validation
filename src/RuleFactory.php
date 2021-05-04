@@ -29,11 +29,7 @@ class RuleFactory extends AbstractRuleFactory
 	 */
 	public function validDomain(bool $checkHostname = false, $default = null): RuleInterface
 	{
-		$flags = 0;
-
-		if ($checkHostname) {
-			$flags |= FILTER_FLAG_HOSTNAME;
-		}
+		$flags = $this->addFlagIf(0, $checkHostname, FILTER_FLAG_HOSTNAME);
 
 		return $this->applyDefault($this->create(FILTER_VALIDATE_DOMAIN, $flags), $default);
 	}
@@ -48,11 +44,7 @@ class RuleFactory extends AbstractRuleFactory
 	 */
 	public function validEmail(bool $checkUnicode = false, $default = null): RuleInterface
 	{
-		$flags = 0;
-
-		if ($checkUnicode) {
-			$flags |= FILTER_FLAG_EMAIL_UNICODE;
-		}
+		$flags = $this->addFlagIf(0, $checkUnicode, FILTER_FLAG_EMAIL_UNICODE);
 
 		return $this->applyDefault($this->create(FILTER_VALIDATE_EMAIL, $flags), $default);
 	}
@@ -70,7 +62,6 @@ class RuleFactory extends AbstractRuleFactory
 	 */
 	public function validFloat(?float $min = null, ?float $max = null, ?int $decimals = null, bool $allowThousands = false, $default = null): RuleInterface
 	{
-		$flags = 0;
 		$options = [];
 
 		if (!is_null($min)) {
@@ -85,9 +76,7 @@ class RuleFactory extends AbstractRuleFactory
 			$options['decimal'] = $decimals;
 		}
 
-		if ($allowThousands) {
-			$flags |= FILTER_FLAG_ALLOW_THOUSAND;
-		}
+		$flags = $this->addFlagIf(0, $allowThousands, FILTER_FLAG_ALLOW_THOUSAND);
 
 		return $this->applyDefault($this->create(FILTER_VALIDATE_FLOAT, $flags, $options), $default);
 	}
@@ -105,7 +94,6 @@ class RuleFactory extends AbstractRuleFactory
 	 */
 	public function validInt(?int $min = null, ?int $max = null, bool $allowOctal = false, bool $allowHex = false, $default = null): RuleInterface
 	{
-		$flags = 0;
 		$options = [];
 
 		if (!is_null($min)) {
@@ -116,13 +104,12 @@ class RuleFactory extends AbstractRuleFactory
 			$options['max_range'] = $max;
 		}
 
-		if ($allowOctal) {
-			$flags |= FILTER_FLAG_ALLOW_OCTAL;
-		}
+		$conditions = [
+			FILTER_FLAG_ALLOW_OCTAL => ($allowOctal),
+			FILTER_FLAG_ALLOW_HEX => ($allowHex),
+		];
 
-		if ($allowHex) {
-			$flags |= FILTER_FLAG_ALLOW_HEX;
-		}
+		$flags = $this->addFlagsIf(0, $conditions);
 
 		return $this->applyDefault($this->create(FILTER_VALIDATE_INT, $flags, $options), $default);
 	}
@@ -142,23 +129,14 @@ class RuleFactory extends AbstractRuleFactory
 	 */
 	public function validIpAddress(bool $allowV4 = false, bool $allowV6 = false, bool $allowPrivateRange = true, bool $allowReservedRange = true, $default = null): RuleInterface
 	{
-		$flags = 0;
+		$conditions = [
+			FILTER_FLAG_IPV4 => ($allowV4),
+			FILTER_FLAG_IPV6 => ($allowV6),
+			FILTER_FLAG_NO_PRIV_RANGE => (!$allowPrivateRange),
+			FILTER_FLAG_NO_RES_RANGE => (!$allowReservedRange),
+		];
 
-		if ($allowV4) {
-			$flags |= FILTER_FLAG_IPV4;
-		}
-
-		if ($allowV6) {
-			$flags |= FILTER_FLAG_IPV6;
-		}
-
-		if (!$allowPrivateRange) {
-			$flags |= FILTER_FLAG_NO_PRIV_RANGE;
-		}
-
-		if (!$allowReservedRange) {
-			$flags |= FILTER_FLAG_NO_RES_RANGE;
-		}
+		$flags = $this->addFlagsIf(0, $conditions);
 
 		return $this->applyDefault($this->create(FILTER_VALIDATE_IP, $flags), $default);
 	}
@@ -209,167 +187,187 @@ class RuleFactory extends AbstractRuleFactory
 		return $rule;
 	}
 
+	/**
+	 * Apply addslashes().
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 *
+	 * @see https://www.php.net/manual/en/function.addslashes.php
+	 */
 	public function addSlashes(): RuleInterface
 	{
 		return $this->create(FILTER_SANITIZE_ADD_SLASHES);
 	}
 
+	/**
+	 * Remove all characters except letters, digits and !#$%&'*+-=?^_`{|}~@.[].
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 */
 	public function cleanEmail(): RuleInterface
 	{
 		return $this->create(FILTER_SANITIZE_EMAIL);
 	}
 
+	/**
+	 * URL-encode string, optionally strip or encode special characters.
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 */
 	public function cleanEncodedString(bool $stripLow = false, bool $stripHigh = false, bool $stripBacktick = false, bool $encodeLow = false, bool $encodeHigh = false): RuleInterface
 	{
-		$flags = 0;
+		$conditions = [
+			FILTER_FLAG_STRIP_LOW => ($stripLow),
+			FILTER_FLAG_STRIP_HIGH => ($stripHigh),
+			FILTER_FLAG_STRIP_BACKTICK => ($stripBacktick),
+			FILTER_FLAG_ENCODE_LOW => ($encodeLow),
+			FILTER_FLAG_ENCODE_HIGH => ($encodeHigh),
+		];
 
-		if ($stripLow) {
-			$flags |= FILTER_FLAG_STRIP_LOW;
-		}
-
-		if ($stripHigh) {
-			$flags |= FILTER_FLAG_STRIP_HIGH;
-		}
-
-		if ($stripBacktick) {
-			$flags |= FILTER_FLAG_STRIP_BACKTICK;
-		}
-
-		if ($encodeLow) {
-			$flags |= FILTER_FLAG_ENCODE_LOW;
-		}
-
-		if ($encodeHigh) {
-			$flags |= FILTER_FLAG_ENCODE_HIGH;
-		}
+		$flags = $this->addFlagsIf(0, $conditions);
 
 		return $this->create(FILTER_SANITIZE_ENCODED, $flags);
 	}
 
+	/**
+	 * Remove all characters except digits, +- and optionally .,eE.
+	 *
+	 * @param bool $allowFractions
+	 * @param bool $allowThousands
+	 * @param bool $allowScientific
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 */
 	public function cleanFloat(bool $allowFractions = false, bool $allowThousands = false, $allowScientific = false): RuleInterface
 	{
-		$flags = 0;
+		$conditions = [
+			FILTER_FLAG_ALLOW_FRACTION => ($allowFractions),
+			FILTER_FLAG_ALLOW_THOUSAND => ($allowThousands),
+			FILTER_FLAG_ALLOW_SCIENTIFIC => ($allowScientific),
+		];
 
-		if ($allowFractions) {
-			$flags |= FILTER_FLAG_ALLOW_FRACTION;
-		}
-
-		if ($allowThousands) {
-			$flags |= FILTER_FLAG_ALLOW_THOUSAND;
-		}
-
-		if ($allowScientific) {
-			$flags |= FILTER_FLAG_ALLOW_SCIENTIFIC;
-		}
+		$flags = $this->addFlagsIf(0, $conditions);
 
 		return $this->create(FILTER_SANITIZE_NUMBER_FLOAT, $flags);
 	}
 
+	/**
+	 * Equivalent to calling htmlspecialchars() with ENT_QUOTES set.
+	 *
+	 * Like htmlspecialchars(), this filter is aware of the default_charset and
+	 * if a sequence of bytes is detected that makes up an invalid character in
+	 * the current character set then the entire string is rejected resulting
+	 * in a 0-length string.
+	 *
+	 * @param bool $encodeQuotes Whether or not to encode quotes.
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 */
 	public function cleanFullSpecialChars(bool $encodeQuotes = true): RuleInterface
 	{
-		$flags = 0;
-
-		if (!$encodeQuotes) {
-			$flags |= FILTER_FLAG_NO_ENCODE_QUOTES;
-		}
+		$flags = $this->addFlagIf(0, !$encodeQuotes, FILTER_FLAG_NO_ENCODE_QUOTES);
 
 		return $this->create(FILTER_SANITIZE_FULL_SPECIAL_CHARS, $flags);
 	}
 
+	/**
+	 * Remove all characters except digits, plus and minus sign.
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 */
 	public function cleanInt(): RuleInterface
 	{
 		return $this->create(FILTER_SANITIZE_NUMBER_INT);
 	}
 
+	/**
+	 * HTML-encode '"<>& and characters with ASCII value less than 32, optionally strip or encode other special characters.
+	 *
+	 * @param bool $stripLow
+	 * @param bool $stripHigh
+	 * @param bool $stripBacktick
+	 * @param bool $encodeHigh
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 */
 	public function cleanSpecialChars(bool $stripLow = false, bool $stripHigh = false, bool $stripBacktick = false, bool $encodeHigh = false): RuleInterface
 	{
-		$flags = 0;
+		$conditions = [
+			FILTER_FLAG_STRIP_LOW => ($stripLow),
+			FILTER_FLAG_STRIP_HIGH => ($stripHigh),
+			FILTER_FLAG_STRIP_BACKTICK => ($stripBacktick),
+			FILTER_FLAG_ENCODE_HIGH => ($encodeHigh),
+		];
 
-		if ($stripLow) {
-			$flags |= FILTER_FLAG_STRIP_LOW;
-		}
-
-		if ($stripHigh) {
-			$flags |= FILTER_FLAG_STRIP_HIGH;
-		}
-
-		if ($stripBacktick) {
-			$flags |= FILTER_FLAG_STRIP_BACKTICK;
-		}
-
-		if ($encodeHigh) {
-			$flags |= FILTER_FLAG_ENCODE_HIGH;
-		}
+		$flags = $this->addFlagsIf(0, $conditions);
 
 		return $this->create(FILTER_SANITIZE_SPECIAL_CHARS, $flags);
 	}
 
+	/**
+	 * Strip tags and HTML-encode double and single quotes, optionally strip or encode special characters.
+	 *
+	 * @param bool $encodeQuotes
+	 * @param bool $stripLow
+	 * @param bool $stripHigh
+	 * @param bool $stripBacktick
+	 * @param bool $encodeLow
+	 * @param bool $encodeHigh
+	 * @param bool $encodeAmp
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 */
 	public function cleanString(bool $encodeQuotes = true, bool $stripLow = false, bool $stripHigh = false, bool $stripBacktick = false, bool $encodeLow = false, bool $encodeHigh = false, bool $encodeAmp = false): RuleInterface
 	{
-		$flags = 0;
+		$conditions = [
+			FILTER_FLAG_NO_ENCODE_QUOTES => (!$encodeQuotes),
+			FILTER_FLAG_STRIP_LOW => ($stripLow),
+			FILTER_FLAG_STRIP_HIGH => ($stripHigh),
+			FILTER_FLAG_STRIP_BACKTICK => ($stripBacktick),
+			FILTER_FLAG_ENCODE_LOW => ($encodeLow),
+			FILTER_FLAG_ENCODE_HIGH => ($encodeHigh),
+			FILTER_FLAG_ENCODE_AMP => ($encodeAmp),
+		];
 
-		if (!$encodeQuotes) {
-			$flags |= FILTER_FLAG_NO_ENCODE_QUOTES;
-		}
-
-		if ($stripLow) {
-			$flags |= FILTER_FLAG_STRIP_LOW;
-		}
-
-		if ($stripHigh) {
-			$flags |= FILTER_FLAG_STRIP_HIGH;
-		}
-
-		if ($stripBacktick) {
-			$flags |= FILTER_FLAG_STRIP_BACKTICK;
-		}
-
-		if ($encodeLow) {
-			$flags |= FILTER_FLAG_ENCODE_LOW;
-		}
-
-		if ($encodeHigh) {
-			$flags |= FILTER_FLAG_ENCODE_HIGH;
-		}
-
-		if ($encodeAmp) {
-			$flags |= FILTER_FLAG_ENCODE_AMP;
-		}
+		$flags = $this->addFlagsIf(0, $conditions);
 
 		return $this->create(FILTER_SANITIZE_STRING, $flags);
 	}
 
+	/**
+	 * Do nothing, optionally strip or encode special characters.
+	 *
+	 * @param bool $stripLow
+	 * @param bool $stripHigh
+	 * @param bool $stripBacktick
+	 * @param bool $encodeLow
+	 * @param bool $encodeHigh
+	 * @param bool $encodeAmp
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 */
 	public function cleanUnsafe(bool $stripLow = false, bool $stripHigh = false, bool $stripBacktick = false, bool $encodeLow = false, bool $encodeHigh = false, bool $encodeAmp = false): RuleInterface
 	{
-		$flags = 0;
+		$conditions = [
+			FILTER_FLAG_STRIP_LOW => ($stripLow),
+			FILTER_FLAG_STRIP_HIGH => ($stripHigh),
+			FILTER_FLAG_STRIP_BACKTICK => ($stripBacktick),
+			FILTER_FLAG_ENCODE_LOW => ($encodeLow),
+			FILTER_FLAG_ENCODE_HIGH => ($encodeHigh),
+			FILTER_FLAG_ENCODE_AMP => ($encodeAmp),
+		];
 
-		if ($stripLow) {
-			$flags |= FILTER_FLAG_STRIP_LOW;
-		}
-
-		if ($stripHigh) {
-			$flags |= FILTER_FLAG_STRIP_HIGH;
-		}
-
-		if ($stripBacktick) {
-			$flags |= FILTER_FLAG_STRIP_BACKTICK;
-		}
-
-		if ($encodeLow) {
-			$flags |= FILTER_FLAG_ENCODE_LOW;
-		}
-
-		if ($encodeHigh) {
-			$flags |= FILTER_FLAG_ENCODE_HIGH;
-		}
-
-		if ($encodeAmp) {
-			$flags |= FILTER_FLAG_ENCODE_AMP;
-		}
+		$flags = $this->addFlagsIf(0, $conditions);
 
 		return $this->create(FILTER_UNSAFE_RAW, $flags);
 	}
 
+	/**
+	 * Remove all characters except letters, digits and
+	 * $-_.+!*'(),{}|\\^~[]`<>#%";/?:@&=.
+	 *
+	 * @return \FigTree\Validation\Contracts\RuleInterface
+	 */
 	public function cleanUrl(): RuleInterface
 	{
 		return $this->create(FILTER_SANITIZE_URL);
@@ -399,5 +397,43 @@ class RuleFactory extends AbstractRuleFactory
 	{
 		return $this->create(FILTER_CALLBACK)
 			->setCallback($callback);
+	}
+
+	/**
+	 * Add a flag if the given condition is true.
+	 *
+	 * @param int $flags The flags being modified.
+	 * @param bool $condition The condition being checked.
+	 * @param int $flag The flag being added.
+	 *
+	 * @return int
+	 */
+	protected function addFlagIf(int $flags, bool $condition, int $flag): int
+	{
+		if ($condition) {
+			$flags |= $flag;
+		}
+
+		return $flags;
+	}
+
+
+	/**
+	 * Add a set of flags if their given conditions are true.
+	 *
+	 * @param int $flags The flags being modified.
+	 * @param array $flagConditions An array of flags and their conditions to determine if they should be added.
+	 *
+	 * @return int
+	 */
+	protected function addFlagsIf(int $flags, array $flagConditions): int
+	{
+		foreach ($flagConditions as $flag => $condition) {
+			if (is_int($flag) && is_bool($condition)) {
+				$flags = $this->addFlagIf($flags, $condition, $flag);
+			}
+		}
+
+		return $flags;
 	}
 }
