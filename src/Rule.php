@@ -167,17 +167,13 @@ class Rule implements RuleInterface
 	 */
 	public function toArray(): array
 	{
-		$flags = $this->getFlags();
 		$options = $this->getOptions();
 		$callback = $this->getCallback();
 
 		$array = [
 			'filter' => $this->getFilterType(),
+			'flags' => $this->getFlags(),
 		];
-
-		if ($flags !== 0) {
-			$array['flags'] = $flags;
-		}
 
 		if (!empty($callback)) {
 			$array['options'] = $callback;

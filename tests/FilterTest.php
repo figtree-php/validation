@@ -162,6 +162,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_VALIDATE_DOMAIN,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(new Rule(FILTER_VALIDATE_DOMAIN), $rules['test_valid_domain']);
@@ -169,6 +170,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_VALIDATE_EMAIL,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(new Rule(FILTER_VALIDATE_EMAIL), $rules['test_valid_email']);
@@ -176,6 +178,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_VALIDATE_FLOAT,
+			'flags' => 0,
 			'options' => [
 				'min_range' => -100,
 				'max_range' => 100,
@@ -191,6 +194,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_VALIDATE_INT,
+			'flags' => 0,
 			'options' => [
 				'min_range' => -100,
 				'max_range' => 100,
@@ -205,6 +209,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_VALIDATE_IP,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(new Rule(FILTER_VALIDATE_IP), $rules['test_valid_ip_address']);
@@ -212,6 +217,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_VALIDATE_MAC,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(new Rule(FILTER_VALIDATE_MAC), $rules['test_valid_mac_address']);
@@ -219,6 +225,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_VALIDATE_REGEXP,
+			'flags' => 0,
 			'options' => [
 				'regexp' => '/^valid value$/i',
 			]
@@ -232,6 +239,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_SANITIZE_ADD_SLASHES,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -242,6 +250,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_SANITIZE_EMAIL,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -252,6 +261,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_SANITIZE_ENCODED,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -262,6 +272,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_SANITIZE_NUMBER_FLOAT,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -272,6 +283,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -282,6 +294,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_SANITIZE_NUMBER_INT,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -292,6 +305,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -302,6 +316,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_SANITIZE_STRING,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -312,6 +327,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_UNSAFE_RAW,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -322,6 +338,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_SANITIZE_URL,
+			'flags' => 0,
 		];
 
 		$this->assertEquals(
@@ -332,6 +349,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_CALLBACK,
+			'flags' => 0,
 			'options' => Closure::fromCallable('trim'),
 		];
 
@@ -343,6 +361,7 @@ class FilterTest extends AbstractTestCase
 
 		$expected = [
 			'filter' => FILTER_CALLBACK,
+			'flags' => 0,
 			'options' => $filter->mult(2),
 		];
 
