@@ -40,7 +40,7 @@ class FilterTest extends AbstractTestCase
 		$filter = $filterFactory
 			->create(function (RuleFactory $rules) {
 				$rules = [
-					'int' => $rules->validInt(0, 10),
+					'int' => $rules->valid()->integer(0, 10),
 				];
 
 				return $rules;
@@ -86,7 +86,7 @@ class FilterTest extends AbstractTestCase
 		$filterFactory
 			->create(function (RuleFactory $rules) {
 				return [
-					$rules->cleanEmail(),
+					$rules->clean()->email(),
 				];
 			});
 	}

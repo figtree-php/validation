@@ -28,7 +28,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->addSlashes();
+		$rule = $ruleFactory->clean()->withSlashes();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -53,7 +53,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->cleanEmail();
+		$rule = $ruleFactory->clean()->email();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -78,7 +78,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->cleanEncodedString();
+		$rule = $ruleFactory->clean()->encodedString();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -103,7 +103,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->cleanFloat();
+		$rule = $ruleFactory->clean()->decimal();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -128,7 +128,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->cleanFullSpecialChars();
+		$rule = $ruleFactory->clean()->fullSpecialChars();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -153,7 +153,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->cleanInt();
+		$rule = $ruleFactory->clean()->digits();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -178,7 +178,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->cleanSpecialChars();
+		$rule = $ruleFactory->clean()->specialChars();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -203,7 +203,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->cleanString();
+		$rule = $ruleFactory->clean()->str();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -228,7 +228,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->cleanUnsafe();
+		$rule = $ruleFactory->clean()->unsafe();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -253,7 +253,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->cleanUrl();
+		$rule = $ruleFactory->clean()->url();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -278,7 +278,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->validBool();
+		$rule = $ruleFactory->valid()->boolean();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -306,7 +306,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->validDomain();
+		$rule = $ruleFactory->valid()->domain();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -331,7 +331,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->validEmail();
+		$rule = $ruleFactory->valid()->email();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -356,7 +356,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->validFloat();
+		$rule = $ruleFactory->valid()->decimal();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -381,7 +381,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->validInt();
+		$rule = $ruleFactory->valid()->integer();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -406,7 +406,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->validIpAddress();
+		$rule = $ruleFactory->valid()->ipAddress();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -431,7 +431,7 @@ class RuleFactoryTest extends AbstractTestCase
 	{
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->validMacAddress();
+		$rule = $ruleFactory->valid()->macAddress();
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
@@ -458,7 +458,7 @@ class RuleFactoryTest extends AbstractTestCase
 
 		$ruleFactory = new RuleFactory();
 
-		$rule = $ruleFactory->validRegExp($pattern);
+		$rule = $ruleFactory->valid()->regexp($pattern);
 
 		$this->assertInstanceOf(RuleInterface::class, $rule);
 
